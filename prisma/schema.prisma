@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum TipoRegistro {
+  AUDIO
+  TEXTO
+  IMAGEM
+}
+
+enum StatusObra {
+  PLANEJADA
+  EM_ANDAMENTO
+  PAUSADA
+  CONCLUIDA
+}
+
+enum StatusProcessamento {
+  PENDENTE
+  PROCESSANDO
+  CONCLUIDO
+  ERRO
+}
+
+model Usuario {
+  id        String   @id @default(uuid())
+  nome      String
+  email     String   @unique
+  telefone  String?
+  senha     String
+  createdAt DateTime @default(now())
+
+  obrasAdmin Obra[]
+  registros  RegistroObra[]
+}
+
+model Obra {
+  id          String     @id @default(uuid())
+  nome        String
+  localizacao String
+  descricao   String?
+  dataInicio  DateTime
+  dataFim     DateTime?
+  status      StatusObra
+  createdAt   DateTime   @default(now())
+
+  usuarioAdminId String
+  usuarioAdmin   Usuario @relation(fields: [usuarioAdminId], references: [id])
+
+  registros RegistroObra[]
+}
+
+model RegistroObra {
+  id                  String              @id @default(uuid())
+  tipo                TipoRegistro
+  conteudo            String?
+  transcricao         String?
+  arquivoUrl          String?
+  dataRegistro        DateTime
+  createdAt           DateTime            @default(now())
+  statusProcessamento StatusProcessamento @default(CONCLUIDO)
+  duracaoSegundos     Int?
+
+  obraId    String
+  usuarioId String
+
+  obra    Obra    @relation(fields: [obraId], references: [id])
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+}
