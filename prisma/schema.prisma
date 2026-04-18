@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client"
+  output = "../src/generated/prisma"
 }
 
 datasource db {
@@ -13,10 +14,10 @@ enum TipoRegistro {
 }
 
 enum StatusObra {
-  PLANEJADA
+  PLANEJADA 
   EM_ANDAMENTO
   PAUSADA
-  CONCLUIDA
+  CONCLUIDA 
 }
 
 enum StatusProcessamento {
