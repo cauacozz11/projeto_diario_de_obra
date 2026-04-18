@@ -1,32 +1,35 @@
 # Skill — Testes
 
 ## Stack
-- Jest
+- Vitest
 - React Testing Library para componentes
-- jest-mock-extended para mock do Prisma
+- vitest-mock-extended para mock do Prisma
 
 ## Configuração básica
 ```ts
-// jest.config.ts
-import type { Config } from 'jest'
-import nextJest from 'next/jest'
+// vitest.config.ts
+import { defineConfig } from 'vitest/config'
+import react from '@vitejs/plugin-react'
+import path from 'path'
 
-const createJestConfig = nextJest({ dir: './' })
-
-const config: Config = {
-  setupFilesAfterFramework: ['<rootDir>/src/tests/setup.ts'],
-  testEnvironment: 'jest-environment-jsdom',
-  moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1',
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./src/tests/setup.ts'],
   },
-}
-
-export default createJestConfig(config)
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+})
 ```
 
 ```ts
 // src/tests/setup.ts
-import '@testing-library/jest-dom'
+import '@testing-library/jest-dom/vitest'
 ```
 
 ## Onde ficam os testes
@@ -50,7 +53,8 @@ Nunca acesse o banco real em testes — use mock:
 ```ts
 // src/tests/mocks/prisma.ts
 import { PrismaClient } from '@prisma/client'
-import { mockDeep, DeepMockProxy } from 'jest-mock-extended'
+import { mockDeep, DeepMockProxy } from 'vitest-mock-extended'
+import { vi } from 'vitest'
 
 export type Context = {
   prisma: DeepMockProxy<PrismaClient>
@@ -58,13 +62,14 @@ export type Context = {
 
 export const prismaMock = mockDeep<PrismaClient>()
 
-jest.mock('@/lib/prisma', () => ({
+vi.mock('@/lib/prisma', () => ({
   prisma: prismaMock,
 }))
 ```
 
 ## Testando Server Actions
 ```ts
+import { describe, it, expect } from 'vitest'
 import { prismaMock } from '@/tests/mocks/prisma'
 import { createObra } from '@/actions/createObra'
 
@@ -87,6 +92,7 @@ describe('createObra', () => {
 
 ## Testando componentes
 ```ts
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ObraCard } from './ObraCard'
@@ -98,7 +104,7 @@ describe('ObraCard', () => {
   })
 
   it('chama onDelete ao clicar no botão', async () => {
-    const onDelete = jest.fn()
+    const onDelete = vi.fn()
     render(<ObraCard nome="Obra Teste" status="ativo" onDelete={onDelete} />)
 
     await userEvent.click(screen.getByRole('button', { name: /excluir/i }))
