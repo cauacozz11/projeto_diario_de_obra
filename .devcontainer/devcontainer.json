@@ -9,7 +9,11 @@
 	},
 	"runArgs": [
     "--net=host"
-  ]
+  ],
+  "remoteEnv": {
+  	"ANTHROPIC_API_KEY": "${localEnv:ANTHROPIC_API_KEY}"
+ },
+	"postCreateCommand": "npm install -g @anthropic-ai/claude-code"
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
