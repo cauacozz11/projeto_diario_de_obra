@@ -8,6 +8,6 @@ export type Context = {
 
 export const prismaMock = mockDeep<PrismaClient>()
 
-vi.mock('@/lib/prisma-client', () => ({
+vi.mock('@/lib/prisma', () => ({
     prisma: prismaMock,
 }))
