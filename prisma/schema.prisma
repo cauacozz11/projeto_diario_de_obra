@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client"
-  output = "../src/generated/prisma/client"
+  output   = "../src/generated/prisma/client"
 }
 
 datasource db {
@@ -14,10 +14,10 @@ enum TipoRegistro {
 }
 
 enum StatusObra {
-  PLANEJADA 
+  PLANEJADA
   EM_ANDAMENTO
   PAUSADA
-  CONCLUIDA 
+  CONCLUIDA
 }
 
 enum StatusProcessamento {
@@ -28,31 +28,34 @@ enum StatusProcessamento {
 }
 
 model Usuario {
-  id        String   @id @default(uuid())
-  nome      String
-  email     String   @unique
-  telefone  String?
-  senha     String
-  createdAt DateTime @default(now())
+  id            String    @id @default(uuid())
+  nome          String
+  email         String    @unique
+  telefone      String?
+  senha         String?
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
 
   obrasAdmin Obra[]
   registros  RegistroObra[]
+  accounts   Account[]
+  sessions   Session[]
 }
 
 model Obra {
-  id          String     @id @default(uuid())
-  nome        String
-  localizacao String
-  descricao   String?
-  dataInicio  DateTime
-  dataFim     DateTime?
-  status      StatusObra
-  createdAt   DateTime   @default(now())
-
+  id             String     @id @default(uuid())
+  nome           String
+  localizacao    String
+  descricao      String?
+  dataInicio     DateTime
+  dataFim        DateTime?
+  status         StatusObra
+  createdAt      DateTime   @default(now())
   usuarioAdminId String
-  usuarioAdmin   Usuario @relation(fields: [usuarioAdminId], references: [id])
 
-  registros RegistroObra[]
+  usuarioAdmin Usuario        @relation(fields: [usuarioAdminId], references: [id])
+  registros    RegistroObra[]
 }
 
 model RegistroObra {
@@ -65,10 +68,45 @@ model RegistroObra {
   createdAt           DateTime            @default(now())
   statusProcessamento StatusProcessamento @default(CONCLUIDO)
   duracaoSegundos     Int?
-
-  obraId    String
-  usuarioId String
+  obraId              String
+  usuarioId           String
 
   obra    Obra    @relation(fields: [obraId], references: [id])
   usuario Usuario @relation(fields: [usuarioId], references: [id])
+}
+
+model Account {
+  id                String  @id @default(uuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user Usuario @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user Usuario @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
 }
