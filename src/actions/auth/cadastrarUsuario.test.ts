@@ -4,17 +4,17 @@ import { cadastrarUsuario } from './cadastrarUsuario'
 import { UsuarioInput } from '@/schemas/usuario'
 
 const dadosValidos: UsuarioInput = {
-    nome: 'Cauã Cozzarin',
-    email: 'cauacozz@gmail.com',
-    telefone: '47999343288',
-    senha: 'Cauaadri7006@',
+    nome: 'Nome testando',
+    email: 'teste@gmail.com',
+    telefone: '11111111111',
+    senha: '89ijfnw985u2409$$',
 }
 
 const usuarioCriado = {
     id: 'id-fake-123',
-    nome: 'Cauã Cozzarin',
-    email: 'cauacozz@gmail.com',
-    telefone: '47999343288',
+    nome: 'Nome testanto',
+    email: 'teste@gmail.com',
+    telefone: '111111111111',
     senha: 'hash-fake',
     emailVerified: null,
     image: null,
