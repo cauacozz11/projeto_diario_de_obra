@@ -5,8 +5,6 @@ import { logarUsuario } from "./logarUsuario"
 import { LoginInput } from "@/schemas/login"
 import { signIn } from "../../../auth"
 import { AuthError } from "next-auth"
-import { sign } from "crypto";
-import { ZodError } from "zod";
 
 const dadosValidos: LoginInput = {
     email: 'cauacozz@gmail.com',
