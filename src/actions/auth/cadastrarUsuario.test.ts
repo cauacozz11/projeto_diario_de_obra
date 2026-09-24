@@ -7,7 +7,7 @@ const dadosValidos: UsuarioInput = {
     nome: 'Nome testando',
     email: 'teste@gmail.com',
     telefone: '11111111111',
-    senha: '89ijfnw985u2409$$',
+    senha: '89ijfnw985u2409$$C',
 }
 
 const usuarioCriado = {
@@ -36,8 +36,8 @@ describe('cadastrarUsuario — sucesso', () => {
         if (resultado.sucesso) {
             expect(resultado.usuario).not.toHaveProperty('senha')
             expect(resultado.usuario.id).toBe('id-fake-123')
-            expect(resultado.usuario.nome).toBe('Cauã Cozzarin')
-            expect(resultado.usuario.email).toBe('cauacozz@gmail.com')
+            expect(resultado.usuario.nome).toBe('Nome testanto')
+            expect(resultado.usuario.email).toBe('teste@gmail.com')
         }
     })
 
@@ -57,14 +57,14 @@ describe('cadastrarUsuario — sucesso', () => {
         prismaMock.usuario.findUnique.mockResolvedValue(null)
         prismaMock.usuario.create.mockResolvedValue(usuarioCriado)
 
-        await cadastrarUsuario({ ...dadosValidos, email: 'CAUACOZZ@GMAIL.COM' })
+        await cadastrarUsuario({ ...dadosValidos, email: 'TESTE@GMAIL.COM' })
 
         expect(prismaMock.usuario.findUnique).toHaveBeenCalledWith({
-            where: { email: 'cauacozz@gmail.com' },
+            where: { email: 'teste@gmail.com' },
         })
         expect(prismaMock.usuario.create).toHaveBeenCalledWith(
             expect.objectContaining({
-                data: expect.objectContaining({ email: 'cauacozz@gmail.com' }),
+                data: expect.objectContaining({ email: 'teste@gmail.com' }),
             })
         )
     })
@@ -89,7 +89,7 @@ describe('cadastrarUsuario — email duplicado', () => {
 
         expect(resultado.sucesso).toBe(false)
         if (!resultado.sucesso) {
-            expect(resultado.erro).toBe('Email já cadastrado')
+            expect(resultado.erro).toBe('E-mail já cadastrado')
         }
     })
 

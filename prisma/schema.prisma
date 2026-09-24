@@ -31,7 +31,7 @@ model Usuario {
   id            String    @id @default(uuid())
   nome          String
   email         String    @unique
-  telefone      String?
+  telefone      String?   @unique
   senha         String?
   emailVerified DateTime?
   image         String?
@@ -40,7 +40,6 @@ model Usuario {
   obrasAdmin Obra[]
   registros  RegistroObra[]
   accounts   Account[]
-  sessions   Session[]
 }
 
 model Obra {
@@ -92,15 +91,6 @@ model Account {
   user Usuario @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
-}
-
-model Session {
-  id           String   @id @default(uuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-
-  user Usuario @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {
