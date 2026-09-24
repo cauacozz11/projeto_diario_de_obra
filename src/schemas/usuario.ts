@@ -1,7 +1,7 @@
 import { z } from "zod"
 
 export const schemaUsuario = z.object({
-    nome: z.string().min(2, "Nome é obrigatório!"),
+    nome: z.string().min(2, "Nome é obrigatório!").regex(/^[a-zA-ZÀ-ÿ\s]+$/, "Nome deve conter apenas letras!"),
     email: z.email("E-mail inválido!"),
     telefone: z.string()
     .regex(/^\(?\d{2}\)?[\s-]?\d{4,5}-?\d{4}$/, "Telefone inválido!")

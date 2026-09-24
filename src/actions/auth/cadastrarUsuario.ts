@@ -22,12 +22,21 @@ export async function cadastrarUsuario(dados: UsuarioInput): Promise<Resposta> {
         const { nome, email: emailRaw, senha, telefone } = resultado.data
         const email = emailRaw.toLowerCase().trim()
 
-        const usuarioExistente = await prisma.usuario.findUnique({
+        const emailExistente = await prisma.usuario.findUnique({
             where: { email },
         })
 
-        if (usuarioExistente) {
-            return { sucesso: false, erro: "Email já cadastrado" }
+        if (emailExistente) {
+            return { sucesso: false, erro: "E-mail já cadastrado" }
+        }
+
+        if (telefone != undefined) {
+            const telefoneExistente = await prisma.usuario.findFirst({
+                    where: { telefone },
+            })
+            if (telefoneExistente) {
+                return { sucesso: false, erro: "Telefone já cadastrado" }
+            }
         }
 
         const senhaCriptografada = await bcrypt.hash(senha, 10)
